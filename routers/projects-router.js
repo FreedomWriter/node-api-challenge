@@ -34,4 +34,11 @@ router.put("/:id", validateProjectId, (req, res) => {
     .then(project => res.status(201).json({ success: true, project }))
     .catch(err => res.status(500).json({ success: false, error: err }));
 });
+
+router.delete("/:id", validateProjectId, (req, res) => {
+  const { id } = req.params;
+  db.remove(id)
+    .then(removed => res.status(201).json({ success: true, removed }))
+    .catch(err => res.status(500).json({ success: false, error: err.message }));
+});
 module.exports = router;
