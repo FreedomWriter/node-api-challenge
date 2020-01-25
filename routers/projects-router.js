@@ -25,4 +25,13 @@ router.post("/", validator("name"), validator("description"), (req, res) => {
     .then(project => res.status(200).json({ success: true, project }))
     .catch(err => res.status(500).json({ success: false, error: err.message }));
 });
+
+router.put("/:id", validateProjectId, (req, res) => {
+  const { id } = req.params;
+  const { body } = req;
+  console.log(id, body);
+  db.update(id, body)
+    .then(project => res.status(201).json({ success: true, project }))
+    .catch(err => res.status(500).json({ success: false, error: err }));
+});
 module.exports = router;
