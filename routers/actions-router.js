@@ -19,6 +19,18 @@ router.get("/:id", validateProjectId, (req, res) => {
     );
 });
 
+router.post("/:id", validateProjectId, (req, res) => {
+  const { id } = req.params;
+  const { body } = req;
+  db.insert(body)
+    .then(actions => res.status(200).json({ success: true, actions }))
+    .catch(err =>
+      res
+        .status(500)
+        .json({ success: false, errorMessage: "Could not add action", err })
+    );
+});
+
 module.exports = router;
 // const { id } = req.params;
 // { ...req.body, user_id: id }
