@@ -10,12 +10,12 @@ const router = express.Router();
 
 router.get("/", (req, res) => {
   db.get()
-    .then(projects => res.status(200).json({ success: true, projects }))
+    .then(projects => res.json({ success: true, projects }))
     .catch(err =>
       res.status(500).json({
         success: false,
         error: "Could not delete projects.",
-        errorMessage
+        err: err.message
       })
     );
 });
@@ -25,9 +25,11 @@ router.get("/:id", validateProjectId, (req, res) => {
   db.get(id)
     .then(projects => res.status(200).json({ success: true, projects }))
     .catch(err =>
-      res
-        .status(500)
-        .json({ success: false, error: "Could not get project.", errorMessage })
+      res.status(500).json({
+        success: false,
+        error: "Could not get project.",
+        err: err.message
+      })
     );
 });
 
@@ -35,9 +37,11 @@ router.post("/", validator("name"), validator("description"), (req, res) => {
   db.insert(req.body)
     .then(project => res.status(200).json({ success: true, project }))
     .catch(err =>
-      res
-        .status(500)
-        .json({ success: false, error: "Could not add project.", errorMessage })
+      res.status(500).json({
+        success: false,
+        error: "Could not add project.",
+        err: err.message
+      })
     );
 });
 
@@ -51,7 +55,7 @@ router.put("/:id", validateProjectId, (req, res) => {
       res.status(500).json({
         success: false,
         error: "Could not update project.",
-        errorMessage
+        err: err.message
       })
     );
 });
@@ -64,7 +68,7 @@ router.delete("/:id", validateProjectId, (req, res) => {
       res.status(500).json({
         success: false,
         error: "Could not delete project.",
-        errorMessage
+        err: err.message
       })
     );
 });
@@ -78,7 +82,7 @@ router.get("/:id/actions", validateProjectId, (req, res) => {
       res.status(500).json({
         success: false,
         error: "Could not get project actions.",
-        errorMessage
+        err: err.message
       })
     );
 });
@@ -97,7 +101,7 @@ router.post(
         res.status(500).json({
           success: false,
           error: "Could not add project.",
-          errorMessage
+          err: err.message
         })
       );
   }
@@ -110,9 +114,7 @@ router.get("/:id/actions", validateProjectId, (req, res) => {
     .get(id)
     .then(actions => res.status(200).json({ success: true, actions }))
     .catch(err =>
-      res
-        .status(500)
-        .json({ success: false, errorMessage: "Could not get actions", err })
+      res.status(500).json({ success: false, error: "Could not get actions" })
     );
 });
 
@@ -121,7 +123,6 @@ router.put("/:id/actions/:actionsId", validateProjectId, (req, res) => {
   const { id } = req.params;
   const { body } = req;
   const { actionsId } = req.params;
-  console.log(id, body, actionsId);
   actionsDb
     .update(actionsId, { ...req.body, project_id: id })
     .then(project => res.status(201).json({ success: true, project }))
@@ -129,7 +130,7 @@ router.put("/:id/actions/:actionsId", validateProjectId, (req, res) => {
       res.status(500).json({
         success: false,
         error: "Could not update actions.",
-        errorMessage
+        err: err.message
       })
     );
 });
@@ -140,7 +141,6 @@ router.delete("/:id/actions/:actionsId", validateProjectId, (req, res) => {
   const { id } = req.params;
   const { body } = req;
   const { actionsId } = req.params;
-  console.log(id, body, actionsId);
   actionsDb
     .remove(actionsId)
     .then(project => res.status(201).json({ success: true, project }))
@@ -148,7 +148,7 @@ router.delete("/:id/actions/:actionsId", validateProjectId, (req, res) => {
       res.status(500).json({
         success: false,
         error: "Could not delete action.",
-        errorMessage
+        err: err.message
       })
     );
 });
